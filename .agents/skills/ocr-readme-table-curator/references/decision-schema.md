@@ -46,3 +46,12 @@ Create a JSON file with one top-level key: `insertions`.
   Complete Markdown table row ready to insert.
 
 The merge script inserts rows deterministically but does not decide whether a paper belongs in the README.
+
+## Optional Extra Keys
+
+You may include extra keys for temporary agent-side bookkeeping, for example:
+
+- `metadata_sources`
+- `metadata_notes`
+
+They are ignored by the merge script.

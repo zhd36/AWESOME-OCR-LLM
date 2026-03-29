@@ -14,7 +14,8 @@ The input is usually a weekly JSON bundle produced by `paper-daily`, for example
 1. Read `README.md`.
 2. Read [references/inclusion-rubric.md](references/inclusion-rubric.md).
 3. Read [references/taxonomy-and-tables.md](references/taxonomy-and-tables.md).
-4. Read [references/decision-schema.md](references/decision-schema.md) only when preparing the merge input for the helper script.
+4. Read [references/metadata-enrichment.md](references/metadata-enrichment.md) when filling `Primary affiliation` or `GitHub`.
+5. Read [references/decision-schema.md](references/decision-schema.md) only when preparing the merge input for the helper script.
 
 ## Workflow
 
@@ -39,7 +40,19 @@ The input is usually a weekly JSON bundle produced by `paper-daily`, for example
 - Prefer the most specific subsection when working under `Specialized Model`.
 - Do not force a paper into `Visual Text Understanding` just because it mentions documents; that section should stay document-centric.
 
-### 4. Enrich only the metadata you can justify
+### 4. Actively search metadata for accepted papers
+
+- For every accepted paper, actively search for `Primary affiliation` and `GitHub` before defaulting to `-`.
+- Search in this order:
+  - the arXiv abstract page
+  - official links named on the arXiv page or in the abstract
+  - the paper PDF first page for author affiliations when needed
+  - the official GitHub / Hugging Face / project page when the ownership is clear
+- Keep this search targeted and short. The goal is to fill high-confidence metadata, not to spend most of the run on enrichment.
+- If the signal stays ambiguous after a short search, use `-`.
+- Never guess affiliations or attach a community-maintained repo as if it were official.
+
+### 5. Enrich only the metadata you can justify
 
 - `Venue`:
   - Prefer the generic arXiv paper badge unless an accepted venue is explicit and unambiguous.
@@ -49,15 +62,17 @@ The input is usually a weekly JSON bundle produced by `paper-daily`, for example
   - Do not append editorial disambiguators such as `(Coarse-to-Fine)` just to avoid a collision.
   - If two rows share the same displayed name, keep the direct name and rely on the arXiv paper identity to distinguish them.
 - `Primary affiliation`:
-  - Use the paper or official repo when the main lab/company is obvious.
-  - If not obvious quickly, use `-`.
+  - Use the primary lab/company/team that clearly owns the work.
+  - Prefer the affiliation visible on the paper itself or the official project page.
+  - If multiple affiliations appear and no single owner is clear, use `-`.
 - `GitHub` or benchmark link:
   - Use the official repo/model/dataset page when high confidence.
-  - Otherwise use `-`.
+  - For benchmark rows, a dataset or project homepage is acceptable when GitHub is not the canonical entry point.
+  - If multiple unofficial reproductions exist, use `-`.
 - `Date`:
   - Keep the README style such as `Mar. 2026`.
 
-### 5. Build a decisions JSON and merge it with the helper script
+### 6. Build a decisions JSON and merge it with the helper script
 
 - Prepare a JSON file that matches [references/decision-schema.md](references/decision-schema.md).
 - Run:
@@ -72,11 +87,12 @@ The input is usually a weekly JSON bundle produced by `paper-daily`, for example
   - insert new rows near the top of that table
 - The script does not decide what to include. That judgment stays with the agent.
 
-### 6. Review the diff before finishing
+### 7. Review the diff before finishing
 
 - Check that every inserted row lands in the intended section.
 - Check that no duplicate row was created under a different nearby section.
 - Check that the table still renders as Markdown and the row has the right number of columns.
+- Check that searched `Primary affiliation` and `GitHub` values are still high-confidence after the final row is assembled.
 - If the change set is large, explain why each inserted paper passed the bar.
 
 ## Judgment Rules
