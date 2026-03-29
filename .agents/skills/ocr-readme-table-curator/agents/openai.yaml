@@ -1,0 +1,4 @@
+interface:
+  display_name: "OCR README Table Curator"
+  short_description: "Curate weekly OCR papers into README tables"
+  default_prompt: "Use $ocr-readme-table-curator to curate a weekly OCR paper JSON list and update README.md tables."
